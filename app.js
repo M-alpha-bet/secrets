@@ -80,7 +80,7 @@ passport.use(new GoogleStrategy(
 
 
 
-app.get("/", (req, res) => {
+app.get("/", function (req, res) {
   res.render("home");
 });
 
@@ -94,15 +94,15 @@ app.get("/auth/google/secrets",
     res.redirect("/secrets");
   });
 
-app.get("/login", (req, res) => {
+app.get("/login", function (req, res) {
   res.render("login");
 });
 
-app.get("/register", (req, res) => {
+app.get("/register", function (req, res) {
   res.render("register");
 });
 
-app.get("/secrets", (req, res) => {
+app.get("/secrets", function (req, res) {
   User.find({"secret": {$ne: null}}).then((foundUsers) => {
     if (foundUsers) {
       res.render("secrets", {usersWithSecrets: foundUsers});
@@ -110,7 +110,7 @@ app.get("/secrets", (req, res) => {
   }).catch((err) => { console.log(err); });
 });
 
-app.get("/submit", (req, res) => {
+app.get("/submit", function (req, res) {
   if (req.isAuthenticated()) {
     res.render("submit");
   } else {
@@ -118,7 +118,7 @@ app.get("/submit", (req, res) => {
   }
 });
 
-app.get("/logout", (req, res) => {
+app.get("/logout", function (req, res) {
   req.logout();
   res.redirect("/");
 });
@@ -126,7 +126,7 @@ app.get("/logout", (req, res) => {
 
 
 // post requests
-app.post("/register", (req, res) => {
+app.post("/register", function (req, res) {
   User.register({username: req.body.username}, req.body.password).then(() => {
     passport.authenticate("local")(req, res, () => {
       res.redirect("/secrets");
@@ -137,7 +137,7 @@ app.post("/register", (req, res) => {
   });
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", function (req, res) {
   const user = new User ({
     username: req.body.username,
     password: req.body.password
@@ -154,7 +154,7 @@ app.post("/login", (req, res) => {
   });
 });
 
-app.post("/submit", (req, res) => {
+app.post("/submit", function (req, res) {
   const submittedSecret = req.body.secret;
 
   User.findById(req.user.id).then((foundUser) => {
