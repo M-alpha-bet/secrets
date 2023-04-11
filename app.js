@@ -17,7 +17,7 @@ app.set("view engine", "ejs");
 
 //Settings up the sessions package to use express
 app.use(session({
-  secret: "importantinformationhere",
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: false,
   // cookie: { secure: true }
@@ -29,7 +29,7 @@ app.use(passport.session());
 
 //mongoose connection
 mongoose.set("strictQuery", false);
-mongoose.connect("mongodb+srv://martinelli:0GpBqEXRrBhmSJFB@clusterm.glfywxd.mongodb.net/userDB", {useNewUrlParser: true});
+mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true});
 
 const userSchema = new mongoose.Schema({
   email: String,
@@ -103,15 +103,11 @@ app.get("/register", (req, res) => {
 });
 
 app.get("/secrets", (req, res) => {
-  if (req.isAuthenticated()) {
-    User.find({"secret": {$ne: null}}).then((foundUsers) => {
-      if (foundUsers) {
-        res.render("secrets", {usersWithSecrets: foundUsers});
-      }
-    }).catch((err) => { console.log(err); });
-  } else {
-    res.redirect("/login");
-  }
+  User.find({"secret": {$ne: null}}).then((foundUsers) => {
+    if (foundUsers) {
+      res.render("secrets", {usersWithSecrets: foundUsers});
+    }
+  }).catch((err) => { console.log(err); });
 });
 
 app.get("/submit", (req, res) => {
