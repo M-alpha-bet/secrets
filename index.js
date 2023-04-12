@@ -153,7 +153,7 @@ app.post("/login", function (req, res) {
 app.post("/submit", function (req, res) {
   const submittedSecret = req.body.secret;
 
-  User.findById(req.user._id).then((foundUser) => {
+  User.findById(req.user.id).then((foundUser) => {
     if (foundUser) {
       foundUser.secret = submittedSecret;
       foundUser.save().then(() => {
